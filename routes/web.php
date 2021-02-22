@@ -2,6 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Models\Transaction;
+use App\Http\Controllers\TripayController;
+use App\Http\Controllers\HomeController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -15,20 +18,15 @@ use App\Models\Transaction;
 
 
 
-// Auth::routes();
-
-// Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::any('/api/submit-form', [HomeController::class,'store']);
+Route::get('/cek-wa', [HomeController::class,'cekwa']);
 
 Auth::routes();
-
-// Route::get('/home', function() {
-//     return view('home');
-// })->name('home')->middleware('auth');
-
 Route::middleware(['auth'])->group(function () {
     Route::get('/home', function () {
         return view('home');
     });
+    Route::get('admin/whatsapp',[App\Http\Controllers\AdminController::class,'whatsapp']);
 
     Route::get('transaction',[App\Http\Controllers\TransactionController::class,'index']);
 });

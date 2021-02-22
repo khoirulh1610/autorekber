@@ -4,19 +4,7 @@ require('dotenv').config();
 const mysql = require('mysql');
 var delay = 3000;
 var base_url = "http://147.139.192.236/autorekber/api/";
-// var con = mysql.createConnection({
-//   host: "sql12.freesqldatabase.com",
-//   user: "sql12387139",
-//   database: "sql12387139",
-//   password: "11ifNeXWQG"
-// });
-
 const con = require('./config');
-// con.connect(function(err) {
-//   if (err) throw err;
-//   console.log("Connected!");
-// });
-
 module.exports = {
   StartVenom: async function(apikey,pid) {
     con.query("update whatsapps set status=1,pid='"+pid+"' where apikey='"+apikey+"'");
@@ -112,7 +100,10 @@ function start(client) {
 					.then((x)=>{
 	          			console.log(x);          
 	          			con.query("insert into chats(chatid,message,status,type)values('"+rows[0].group_id+"','"+rows[0].message+"',0,'out')");       
-	          			con.query("update transactions set status='P' where id="+rows[0].id);   
+	          			con.query("update transactions set status='P' where id="+rows[0].id,(err,rows)=>{
+                    exurl("tripay?group_id="+rows[0].group_id);
+                  });   
+
 				});			
 			}			
 		 });
@@ -185,8 +176,10 @@ function start(client) {
         if(err)console.log(err);
         if(rows){
             if(rows.length==1){
-              exurl("instruction?id="+rows[0].id);
-              con.query("insert into cmds(group_id,command,status,created_at)values('"+message.from+"','"+message.body+"','0',now())");    
+              con.query("update transactions set bot_cmd='"+message.body+"' where group_id='"+message.from+"'",(err,rows)=>{
+                // exurl("tripay?group_id="+message.from);  
+              });              
+              // con.query("insert into cmds(group_id,command,status,created_at)values('"+message.from+"','"+message.body+"','0',now())");    
             }            
         }
       })
@@ -202,13 +195,13 @@ function start(client) {
 }
 
 
-function exurl(link) {
-  var apiKey = "YXV0b3Jla2Jlci5jb20=";
-  axios.get(base_url + link, {
-    // headers: {
-    //   'apikey: botwa123456';  
-    // }
-  })
+function exurl(link,data="") {
+  var apikey = "6116afedcb0bc31083935c1c262ff4c9";
+  axios.get(base_url + link , {
+    headers: {
+      apikey: apikey  
+    }
+  },{data})
   .then((res) => {
     console.log(res)
   })

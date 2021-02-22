@@ -1,7 +1,7 @@
 const app = require('./bot');
 const find = require('find-process');
 const con = require('./config');
-let apikey = process.argv[2];
+let apikey = process.argv[2] || 'wa2';
 con.connect(function(err) {
     if (err) throw err;
     if(apikey==null || apikey==''){

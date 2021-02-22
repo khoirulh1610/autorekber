@@ -28,15 +28,18 @@ class TripayController extends Controller
 		if(!$transaction){
     		return response()->json(['message'=>'Transaction Not Found']);
     	}
-
         if($transaction->bot=='Select Payment'){
-            $payment = Payment::where('id',$transaction->bot_cmd)->first();
+            $payment = Payment::where('id',$transaction->bot_cmd)->first();            
         }
         if(!$payment){
             return response()->json(['message'=>'Payment Not Found']);
-        }    	
+        }else{
+        	return $this->chanel($request);	
+        }
+
+
         
-    	return $this->chanel($request);
+    	
     }
 
     function CekAPI($request){
